@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "Мои задачи";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" id="urlForMethodTaskDone" value="@Url.Action("TaskDone","Home")" />
+<div class="container">
+    <h2>Все мои задачи: </h2>
+    @foreach (var t in ViewBag.Tasks)
+    {
+        string idForImage = "TaskDoneId" + t.TaskId;
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">@t.TaskName</h4>
+                <p class="card-text">@t.TaskText</p>
+                <div class="form-group row">
+                    <div class="col-5">
+                        <label class="form-control" id="example-date-input1">Дата добавления задачи: @t.UploadDate.ToShortDateString()</label>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-control" id="example-date-input2">Срок задачи: @t.TermDate.ToShortDateString()</label>
+                    </div>
+                    <div class="col-2">
+                        @if (t.IsDone == false)
+                        {
+                            string btnId = "TaskDoId" + t.TaskId;
+                            <button onclick="taskDone('@t.TaskId')" id="@btnId" class="btn btn-info btn-lg">
+                                Сделано
+                            </button>
+                        }
+                        else
+                        {
+                            <img src="~/Content/images/doneImage.png" alt="doneImage" />
+                        }
+                        <img id="@idForImage" style="display:none" src="~/Content/images/doneImage.png" alt="TaskDoneImage" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

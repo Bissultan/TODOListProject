@@ -1,0 +1,107 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Регистрация</title>
+    <link href="~/Content/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/sb-admin.css" rel="stylesheet" />
+    <script src="~/Content/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Content/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script type="text/javascript">
+        function validateForm()
+        {
+            var ajaxMethodIsCompleted = false;
+            var ajaxMethodUrl = $("#ajaxMethodUrl").val();// /Home/checkEmailToExist
+            $.ajax({
+                type: "POST",
+                url: ajaxMethodUrl,
+                data: '{email: "' + $("#exampleInputEmail1").val() + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    if (response == "NOT_FOUND")
+                    {
+                        ajaxMethodIsCompleted = true;
+                    }
+                    else if (response == "FOUND")
+                    {
+                        alert("Данный email уже существует!");
+                    }
+                },
+                failure: function (response) {
+                    alert("Произошла ошибка! Обратитесь к администратору! " + response);                    
+                },
+                error: function (response) {
+                    alert("Произошла ошибка! Обратитесь к администратору! " + response);
+                }
+            });
+
+            if ($("#exampleInputPassword1").val() != $("#exampleConfirmPassword").val() )
+            {
+                alert("Пароли не совпадают!");
+                return false;
+            }
+            if (!ajaxMethodIsCompleted)
+            {
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body class="bg-dark">
+    <input type="hidden" value="@Url.Action("checkEmailToExist", "Home")"  id="ajaxMethodUrl"/>
+    <div class="container">
+        <div class="card card-register mx-auto mt-5">
+            <div class="card-header">Регистрация в системе</div>
+            <div class="card-body">
+                <form method="post" onsubmit="return validateForm()" action="@Url.Action("AddUser", "Home")">
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="exampleInputName">Имя</label>
+                                <input class="form-control" id="exampleInputName" name="name" type="text" aria-describedby="nameHelp" placeholder="Введите имя" required> 
+                            </div>
+                            <div class="col-md-6">
+                                <label for="exampleInputLastName">Фамилия</label>
+                                <input class="form-control" id="exampleInputLastName" name="secondName" type="text" aria-describedby="nameHelp" placeholder="Введите фамилия" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Логин</label>
+                        <input class="form-control" id="exampleInputEmail1" type="text" name="email" aria-describedby="emailHelp" placeholder="Введите логин" required>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="exampleInputPassword1">Пароль</label>
+                                <input class="form-control" id="exampleInputPassword1" name="password" type="password" placeholder="Введите пароль" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="exampleConfirmPassword">Повторите пароль</label>
+                                <input class="form-control" id="exampleConfirmPassword" type="password" placeholder="Повторите пароль" required>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-block"  id="loginUrl" value="Зарегистрировать" />
+                </form>
+                <div class="text-center">
+                    <a class="d-block small mt-3" href="@Url.Action("Login", "Home")">Вход в систему</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8; IE=edge" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>@ViewBag.Title – Планировщик задач</title>
+    <link href="~/Content/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Content/css/sb-admin.css" rel="stylesheet" />
+    <script src="~/Content/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Content/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="~/Content/vendor/chart.js/Chart.min.js"></script>
+    <script src="~/Content/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="~/Content/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="~/Content/js/sb-admin.min.js"></script>
+    <script src="~/Content/js/sb-admin-datatables.min.js"></script>
+    <script src="~/Content/js/sb-admin-charts.min.js"></script>
+    <script type="text/javascript">
+        function taskDone(id) {
+            var ajaxMethodUrl = $("#urlForMethodTaskDone").val();
+            $.ajax({
+                type: "POST",
+                url: ajaxMethodUrl,
+                data: '{taskId: "' + id + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    $("#TaskDoId" + id).hide();
+                    $("#TaskDoneId" + id).css("display", "block");
+                },
+                failure: function (response) {
+                    alert("Произошла ошибка! Обратитесь к администратору! ");
+                },
+                error: function (response) {
+                    alert("Произошла ошибка! Обратитесь к администратору! ");
+                }
+            });
+        }
+    </script>
+</head>
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+        <a class="navbar-brand" href="index.html">Планировщик задач</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
+                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#exampleAccordion">
+                        <i class="fa fa-fw fa-table"></i>
+                        <span class="nav-link-text">Мои задачи</span>
+                    </a>
+                    <ul class="sidenav-second-level collapse" id="collapseComponents">
+                        <li>
+                            <a href="@Url.Action("ShowTaskList","Home")">Список задач</a>
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#myModal">Добавить (+)</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Example Pages">
+                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseExamplePages" data-parent="#exampleAccordion">
+                        <i class="fa fa-fw fa-file"></i>
+                        <span class="nav-link-text">Прочие</span>
+                    </a>
+                    <ul class="sidenav-second-level collapse" id="collapseExamplePages">
+                        <li>
+                            <a href="#">Инструкция</a>
+                        </li>
+                        <li>
+                            <a href="№">О системе</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="navbar-nav sidenav-toggler">
+                <li class="nav-item">
+                    <a class="nav-link text-center" id="sidenavToggler">
+                        <i class="fa fa-fw fa-angle-left"></i>
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <form class="form-inline my-2 my-lg-0 mr-lg-2">
+                        <div class="input-group">
+                            <input class="form-control" type="text" placeholder="Поиск задания...">
+                            <span class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    @if (ViewBag.User != null)
+                    {
+                        <span class="nav-link">
+                            @ViewBag.User.Email
+                        </span>
+                    }
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Login", "Home")">
+                        <i class="fa fa-fw fa-sign-out"></i>Выход
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="content-wrapper">
+        @RenderBody()
+        <footer class="sticky-footer">
+            <div class="container">
+                <div class="text-center">
+                    <small>Ерназаров Бисултан © 2018</small>
+                </div>
+            </div>
+        </footer>
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fa fa-angle-up"></i>
+        </a>
+    </div>
+
+    <div id="myModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Добавление новой задачи</h4>
+                    <button style="align-self: flex-end;" type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" action="@Url.Action("AddNewTask","Home")">
+                            <div class="form-group">
+                                <label for="taskName">Наименование задачи:</label>
+                                <input type="text" class="form-control" name="taskName" id="taskName">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="taskText">Текст задачи:</label>
+                                <textarea class="form-control" id="taskText" name="taskText" rows="3"></textarea>
+                            </div>
+
+                            <div class="form-control">
+                                <label for="taskDate">Срок задачи:</label>
+                                <input type="date" id="taskDate" name="taskDate" />
+                            </div>
+                            <div class="form-group" style="margin-top:15px;">
+                                <button type="submit" class="btn btn-success">Добавить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
